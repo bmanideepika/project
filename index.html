@@ -1,34 +1,205 @@
 <!DOCTYPE html>
-<!-- saved from url=(0051)https://code.gist.build/renderer/0.5.2/index.html#/ -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
-    
-    <style>
-      html::-webkit-scrollbar {
-        display: none;
+<html>
+<head>
+  <title>CGPA & Percentage Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 10px;
+    }
+    h2 {
+      border-bottom: 2px solid #333;
+      padding-bottom: 5px;
+    }
+    .section {
+      margin-bottom: 40px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #f9f9f9;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 10px;
+    }
+    input[type="number"] {
+      width: 100px;
+      padding: 5px;
+    }
+    button {
+      padding: 6px 14px;
+      cursor: pointer;
+    }
+    .delete-btn {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 3px;
+    }
+    .delete-btn:hover {
+      background: #c0392b;
+    }
+    #result1, #result2 {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    #totalMarksContainer {
+      margin-top: 15px;
+      display: none;
+    }
+    #totalMarksContainer input {
+      width: 120px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Percentage Calculator (Subject-wise) -->
+  <div class="section">
+    <h2>1. Percentage Calculator (Subject-wise)</h2>
+    <div id="subjectInputs">
+      <div class="row">
+        <input type="number" class="obtained" placeholder="Obtained Marks" min="0" />
+        <button class="delete-btn" onclick="deleteSubject(this)">Delete</button>
+      </div>
+    </div>
+    <button onclick="addSubject()">Add Subject ➕</button>
+    <button onclick="showTotalMarksInput()">Next: Enter Total Marks ➡️</button>
+
+    <div id="totalMarksContainer">
+      <label>Total Maximum Marks (all subjects combined): </label>
+      <input type="number" id="totalMaxMarks" placeholder="e.g. 500" min="1" />
+      <button onclick="calculatePercentage()">Calculate Percentage & CGPA</button>
+    </div>
+
+    <div id="result1"></div>
+  </div>
+
+  <!-- 2. Semester-wise Percentage & CGPA -->
+  <div class="section">
+    <h2>2. Semester-wise CGPA Calculator</h2>
+    <div id="semesterInputs">
+      <div class="row">
+        <input type="number" class="semesterPercent" placeholder="Semester Percentage" min="0" max="100" />
+        <button class="delete-btn" onclick="deleteSemester(this)">Delete</button>
+      </div>
+    </div>
+    <button onclick="addSemester()">Add Semester ➕</button>
+    <button onclick="calculateSemesterCGPA()">Calculate Average & CGPA</button>
+    <div id="result2"></div>
+  </div>
+
+  <script>
+    // 1. Percentage Calculator (Subject-wise)
+    function addSubject() {
+      const container = document.getElementById('subjectInputs');
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.innerHTML = `
+        <input type="number" class="obtained" placeholder="Obtained Marks" min="0" />
+        <button class="delete-btn" onclick="deleteSubject(this)">Delete</button>
+      `;
+      container.appendChild(row);
+    }
+
+    function deleteSubject(btn) {
+      const container = document.getElementById('subjectInputs');
+      if (container.children.length > 1) {
+        btn.parentElement.remove();
+      } else {
+        alert('At least one subject is required.');
       }
-      html {
-        scrollbar-width: none;
-      }
-      body {
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
+    }
+
+    function showTotalMarksInput() {
+      const obtainedMarks = document.querySelectorAll('.obtained');
+
+      for (let input of obtainedMarks) {
+        const val = parseFloat(input.value);
+        if (isNaN(val) || val < 0) {
+          alert('Please enter valid obtained marks (>= 0) for all subjects.');
+          return;
+        }
       }
 
-      :where(.cio-message-visible) {
-        display: block;
-      }
-      :where(.cio-message-hidden) {
-        display: none;
-      }
-    </style>
-  <script type="text/javascript" src="./main.dart.js.download" async=""></script><style></style><meta flt-viewport="" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Engine</title><meta id="flutterweb-theme" name="theme-color" content="#2196f3"></head>
-  <body flt-renderer="html (requested explicitly)" flt-build-mode="release" spellcheck="false" style="position: fixed; inset: 0px; overflow: hidden; padding: 0px; margin: 0px; user-select: none; touch-action: none; font: 14px sans-serif; color: red;">
-    <script src="./main.js.download" type="application/javascript"></script>
-  
+      // Show total marks input section
+      document.getElementById('totalMarksContainer').style.display = 'block';
+      document.getElementById('result1').innerHTML = '';
+    }
 
-<flt-glass-pane style="position: absolute; inset: 0px;"><template shadowrootmode="open"><style></style><flt-semantics-placeholder role="button" aria-live="polite" tabindex="0" aria-label="Enable accessibility" style="position: absolute; left: -1px; top: -1px; width: 1px; height: 1px;"></flt-semantics-placeholder><flt-scene-host style="pointer-events: none;"><flt-scene style="position: absolute;"><flt-transform style="position: absolute; transform-origin: 0px 0px 0px; transform: none;"><flt-offset style="position: absolute; transform-origin: 0px 0px 0px; transform: translate(0px, 0px);"></flt-offset></flt-transform></flt-scene></flt-scene-host><flt-semantics-host style="position: absolute; transform-origin: 0px 0px 0px; transform: scale(0.666667);"></flt-semantics-host></template></flt-glass-pane></body></html>
+    function calculatePercentage() {
+      const obtainedMarks = document.querySelectorAll('.obtained');
+      let sumObtained = 0;
+
+      for (let input of obtainedMarks) {
+        sumObtained += parseFloat(input.value);
+      }
+
+      const totalMax = parseFloat(document.getElementById('totalMaxMarks').value);
+      if (isNaN(totalMax) || totalMax <= 0 || sumObtained > totalMax) {
+        alert('Please enter a valid total maximum marks (>= sum of obtained marks).');
+        return;
+      }
+
+      const percentage = (sumObtained / totalMax) * 100;
+      const cgpa = percentage / 9.5;
+
+      document.getElementById('result1').innerHTML = `
+        Total Obtained Marks: ${sumObtained} / ${totalMax} <br>
+        Percentage: ${percentage.toFixed(2)}% <br>
+        CGPA: ${cgpa.toFixed(2)}
+      `;
+    }
+
+    // 2. Semester-wise Percentage & CGPA Calculator
+    function addSemester() {
+      const container = document.getElementById('semesterInputs');
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.innerHTML = `
+        <input type="number" class="semesterPercent" placeholder="Semester Percentage" min="0" max="100" />
+        <button class="delete-btn" onclick="deleteSemester(this)">Delete</button>
+      `;
+      container.appendChild(row);
+    }
+
+    function deleteSemester(btn) {
+      const container = document.getElementById('semesterInputs');
+      if (container.children.length > 1) {
+        btn.parentElement.remove();
+      } else {
+        alert('At least one semester is required.');
+      }
+    }
+
+    function calculateSemesterCGPA() {
+      const semesterInputs = document.querySelectorAll('.semesterPercent');
+      let sum = 0;
+      let count = semesterInputs.length;
+
+      for (let input of semesterInputs) {
+        const val = parseFloat(input.value);
+        if (isNaN(val) || val < 0 || val > 100) {
+          alert('Please enter valid percentages between 0 and 100 for all semesters.');
+          return;
+        }
+        sum += val;
+      }
+
+      const avg = sum / count;
+      const cgpa = avg / 9.5;
+
+      document.getElementById('result2').innerHTML = `
+        Semesters: ${count} <br>
+        Average Percentage: ${avg.toFixed(2)}% <br>
+        CGPA: ${cgpa.toFixed(2)}
+      `;
+    }
+  </script>
+
+</body>
+</html>
